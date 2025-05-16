@@ -1,5 +1,3 @@
-// src/plugins/calcPlugin.js
-
 const calcPlugin = {
   name: "calc",
   command: "/calc",

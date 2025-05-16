@@ -36,13 +36,13 @@ const MessageBubble = ({ message }) => {
 
       // Handle Weather Plugin
       if (pluginName === "weather") {
-        const { city, temperature, condition, windspeed, humidity, time } =
+        const { location, temperature, condition, windspeed, humidity, time } =
           pluginData;
 
         return (
           <div className="plugin-card weather-card">
             <div>
-              <strong>📍 Location:</strong> {city}
+              <strong>📍 Location:</strong> {location}
             </div>
             <div>
               <strong>🌡️ Temperature:</strong> {temperature}
@@ -87,7 +87,6 @@ const MessageBubble = ({ message }) => {
         );
       }
 
-      // Default plugin fallback
       return (
         <div className="plugin-card">{JSON.stringify(pluginData, null, 2)}</div>
       );
