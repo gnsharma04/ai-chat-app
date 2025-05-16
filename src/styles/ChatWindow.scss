@@ -1,5 +1,5 @@
 .chat-window {
-  height: 600px;
+  height: 500px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -10,6 +10,55 @@
   border-radius: 8px;
   background: #fafafa;
 
-  .blank-chat-window {
+  .chat-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.blank-chat-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 20px;
+  color: #555;
+  text-align: center;
+}
+
+.blank-chat-message {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.blank-chat-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.command-button-stack {
+  width: 100%;
+  max-width: 200px;
+
+  button {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    border: 1px solid #bbdefb;
+
+    &:hover {
+      background-color: #e3f2fd;
+      border-color: #90caf9;
+      opacity: 1;
+    }
   }
 }

@@ -28,20 +28,29 @@ function App() {
     setMessages((prev) => [...prev, userMessage]);
 
     if (isPluginCommand(input)) {
-      const pluginResponse = await handlePluginCommand(input);
-
-      console.log("pluginResponse", pluginResponse);
-
-      const botMessage = {
-        id: Date.now() + 1,
+      const typingMessage = {
+        id: Date.now() + 0.5,
         sender: "bot",
-        content: "",
-        type: "plugin",
-        pluginName: pluginResponse.pluginName,
-        pluginData: pluginResponse.pluginData,
+        type: "text",
+        content: "Thinking...",
+        isTyping: true,
       };
 
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages((prev) => [...prev, typingMessage]);
+
+      const pluginResponse = await handlePluginCommand(input);
+
+      setMessages((prev) => [
+        ...prev.filter((msg) => !msg.isTyping),
+        {
+          id: Date.now() + 1,
+          sender: "bot",
+          content: "",
+          type: "plugin",
+          pluginName: pluginResponse.pluginName,
+          pluginData: pluginResponse.pluginData,
+        },
+      ]);
     }
 
     setInput("");
@@ -70,7 +79,12 @@ function App() {
     <div className="chat-app">
       <div className="chat-container">
         <h2 className="chat-title">AI Chat Interface</h2>
-        <ChatWindow messages={messages} scrollRef={scrollRef} />
+        <ChatWindow
+          messages={messages}
+          scrollRef={scrollRef}
+          input={input}
+          setInput={setInput}
+        />
         <ChatInput
           input={input}
           setInput={setInput}

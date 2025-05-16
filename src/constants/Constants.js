@@ -29,3 +29,5 @@ export function formatTime(isoUtcTime) {
     hour12: true,
   }).format(utcDate);
 }
+
+export const commands = ["/calc", "/weather", "/define"];

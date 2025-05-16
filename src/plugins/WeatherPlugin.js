@@ -2,7 +2,7 @@
 This is Weather Plugin, it uses OpenMeteo to fetch weather info
 OpenMeteo requires Coordinates of the location, therefore the coordinates are fetched using Nominatim API
 */
-import { formatTime, mapWeatherCode } from "../functions/WeatherFunctions";
+import { formatTime, mapWeatherCode } from "../constants/Constants";
 
 const weatherPlugin = {
   name: "weather",
