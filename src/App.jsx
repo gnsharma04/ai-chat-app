@@ -6,73 +6,77 @@ import { handlePluginCommand, isPluginCommand } from "./plugins/PluginManager";
 
 function App() {
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("messageList");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      return JSON.parse(localStorage.getItem("messageList")) || [];
+    } catch {
+      return [];
+    }
   });
 
   const [input, setInput] = useState("");
   const scrollRef = useRef(null);
+  const hasInitialized = useRef(false);
 
-  const isFirstRender = useRef(true);
+  const saveMessages = (msgList) => {
+    localStorage.setItem("messageList", JSON.stringify(msgList));
+  };
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-    const userMessage = {
+    const userMsg = {
       id: Date.now(),
       sender: "user",
-      content: input.trim(),
+      content: trimmed,
       type: "text",
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
 
-    if (isPluginCommand(input)) {
-      const typingMessage = {
-        id: Date.now() + 0.5,
+    if (isPluginCommand(trimmed)) {
+      const loading = {
+        id: Date.now() + 1,
         sender: "bot",
         type: "text",
         content: "Thinking...",
         isTyping: true,
       };
+      setMessages([...updatedMessages, loading]);
 
-      setMessages((prev) => [...prev, typingMessage]);
+      const response = await handlePluginCommand(trimmed);
 
-      const pluginResponse = await handlePluginCommand(input);
-
-      setMessages((prev) => [
-        ...prev.filter((msg) => !msg.isTyping),
+      const finalMessages = [
+        ...updatedMessages,
         {
-          id: Date.now() + 1,
+          id: Date.now() + 2,
           sender: "bot",
-          content: "",
           type: "plugin",
-          pluginName: pluginResponse.pluginName,
-          pluginData: pluginResponse.pluginData,
+          pluginName: response.pluginName,
+          pluginData: response.pluginData,
         },
-      ]);
+      ];
+
+      setMessages(finalMessages);
     }
 
     setInput("");
   };
 
-  const clearChat = () => {
+  const resetChat = () => {
     setMessages([]);
     localStorage.removeItem("messageList");
   };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    localStorage.setItem("messageList", JSON.stringify(messages));
-  }, [messages]);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
+    if (hasInitialized.current) {
+      saveMessages(messages);
+    } else {
+      hasInitialized.current = true;
     }
-
-    localStorage.setItem("messageList", JSON.stringify(messages));
   }, [messages]);
 
   return (
@@ -88,8 +92,8 @@ function App() {
         <ChatInput
           input={input}
           setInput={setInput}
-          onSend={handleSend}
-          onClear={clearChat}
+          onSend={sendMessage}
+          onClear={resetChat}
           messageCount={messages.length}
         />
       </div>

@@ -1,7 +1,3 @@
-/*
-This is Weather Plugin, it uses OpenMeteo to fetch weather info
-OpenMeteo requires Coordinates of the location, therefore the coordinates are fetched using Nominatim API
-*/
 import { formatTime, mapWeatherCode } from "../constants/Constants";
 
 const weatherPlugin = {
@@ -10,51 +6,31 @@ const weatherPlugin = {
 
   execute: async (input) => {
     const city = input.trim();
-
-    if (!city) {
-      return {
-        error: "Please Add A City Name.",
-      };
-    }
+    if (!city) return { error: "Enter a city name." };
 
     try {
-      //Finding coordinates using Nominatim
-      const response = await fetch(
+      const coordRes = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           city
         )}`
       );
-      const data = await response.json();
+      const coords = await coordRes.json();
 
-      if (!data.length) {
-        return {
-          error: "City Not Found.",
-        };
-      }
+      if (!coords.length) return { error: "Couldn't find that city." };
 
-      const { lat, lon, display_name } = data[0];
+      const { lat, lon, display_name } = coords[0];
 
-      //Calling Open-Meteo API with coordinates returned by Nominatim
-      const weatherResponse = await fetch(
+      const weatherRes = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m`
       );
-      const weatherData = await weatherResponse.json();
+      const weather = await weatherRes.json();
 
-      const current = weatherData.current_weather;
+      const current = weather.current_weather;
+      if (!current) return { error: "No weather info available." };
 
-      if (!current) {
-        return {
-          error: "Weather data not available for given location.",
-        };
-      }
-
-      const humidityIndex = weatherData.hourly.time.findIndex(
-        (t) => t === current.time
-      );
+      const index = weather.hourly.time.indexOf(current.time);
       const humidity =
-        humidityIndex !== -1
-          ? weatherData.hourly.relative_humidity_2m[humidityIndex] + "%"
-          : "N/A";
+        index > -1 ? `${weather.hourly.relative_humidity_2m[index]}%` : "N/A";
 
       return {
         location: display_name,
@@ -64,10 +40,10 @@ const weatherPlugin = {
         humidity,
         time: formatTime(current.time),
       };
-    } catch (err) {
+    } catch (e) {
       return {
-        error: "Failed to fetch weather data.",
-        details: err.message,
+        error: "Error fetching weather.",
+        details: e.message,
       };
     }
   },
