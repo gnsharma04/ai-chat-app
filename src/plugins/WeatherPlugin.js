@@ -1,3 +1,9 @@
+/*
+This code is for WeatherPlugin. It uses 2 different APIs.
+Nominatim API for determining coordinates for the given location
+Open-Meteo API for finding weather conditions according to coordinates returned by Nominatim API
+*/
+
 import { formatTime, mapWeatherCode } from "../constants/Constants";
 
 const weatherPlugin = {
@@ -9,6 +15,7 @@ const weatherPlugin = {
     if (!city) return { error: "Enter a city name." };
 
     try {
+      //Fetching Coordinates
       const coordRes = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           city
@@ -20,6 +27,7 @@ const weatherPlugin = {
 
       const { lat, lon, display_name } = coords[0];
 
+      //Fetching Weather Conditions
       const weatherRes = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m`
       );

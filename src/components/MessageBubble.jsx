@@ -6,12 +6,14 @@ const MessageBubble = ({ message }) => {
 
   const renderText = () => content;
 
+  // Handle Error Messages
   const renderError = () => (
     <div className="plugin-card error-card">
       <strong>Error:</strong> {pluginData.error}
     </div>
   );
 
+  // Handle Calc plugin output
   const renderCalc = () => (
     <div className="plugin-card calc-card">
       <div>
@@ -23,6 +25,7 @@ const MessageBubble = ({ message }) => {
     </div>
   );
 
+  // Handle Weather Plugin Output
   const renderWeather = () => {
     const { location, temperature, condition, windspeed, humidity, time } =
       pluginData;
@@ -51,6 +54,7 @@ const MessageBubble = ({ message }) => {
     );
   };
 
+  // Handle Define Plugin Output
   const renderDefine = () => {
     const { word, phonetic, definitions } = pluginData;
 
@@ -74,6 +78,7 @@ const MessageBubble = ({ message }) => {
     );
   };
 
+  // Rendur Plugin Output to Chat Window
   const renderPlugin = () => {
     if (!pluginData) return null;
     if (pluginData.error) return renderError();

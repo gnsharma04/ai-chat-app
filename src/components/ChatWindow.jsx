@@ -6,6 +6,7 @@ import { commands } from "../constants/Constants";
 import { Calculate, MenuBook, SmartToy, WbSunny } from "@mui/icons-material";
 
 const ChatWindow = ({ messages, scrollRef, input, setInput }) => {
+  // Set Input Field Blank on Start (before clicking button)
   const [activeCommandInput, setActiveCommandInput] = useState(null);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const ChatWindow = ({ messages, scrollRef, input, setInput }) => {
     setActiveCommandInput(command);
   };
 
+  //Icons for different command buttons
   const getButtonIcon = (ele) => {
     switch (ele) {
       case "/calc":

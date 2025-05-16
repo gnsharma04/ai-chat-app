@@ -17,7 +17,7 @@ const calcPlugin = {
       const result = Function(`"use strict"; return (${input})`)();
 
       if (isNaN(result)) {
-        throw new Error("Result is not a number");
+        throw new Error("Not a number");
       }
 
       return {

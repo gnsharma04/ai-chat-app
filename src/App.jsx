@@ -5,6 +5,7 @@ import "./App.scss";
 import { handlePluginCommand, isPluginCommand } from "./plugins/PluginManager";
 
 function App() {
+  //Check for whether there are exiting messages in local storage
   const [messages, setMessages] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("messageList")) || [];
@@ -17,6 +18,7 @@ function App() {
   const scrollRef = useRef(null);
   const hasInitialized = useRef(false);
 
+  //Local Storage for Entire Message List
   const saveMessages = (msgList) => {
     localStorage.setItem("messageList", JSON.stringify(msgList));
   };
@@ -64,6 +66,7 @@ function App() {
     setInput("");
   };
 
+  // Clear chat function
   const resetChat = () => {
     setMessages([]);
     localStorage.removeItem("messageList");
